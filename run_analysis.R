@@ -28,33 +28,27 @@ colNamesX <- function(namesttdata2) {
 
 ## 1. Merges the training and the test sets to create one data set.
 ### create a sub directory
-maindir <- "."
-setwd(maindir)
-subdir <- "ProjData"
-if (! file.exists(subdir)){
-    dir.create(file.path(maindir, subdir))
-}
 
 ### download the data into current workding directory
-fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip?accessType=DOWNLOAD";
-download.file(fileUrl,destfile="./ProjData/getdata-projectfiles-UCI HAR Dataset.zip",mode='wb')
-unzip("./getdata-projectfiles-UCI HAR Dataset.zip", exdir = "./ProjData")
+# fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip?accessType=DOWNLOAD";
+# download.file(fileUrl,destfile="./getdata-projectfiles-UCI HAR Dataset.zip",mode='wb')
+# unzip("./getdata-projectfiles-UCI HAR Dataset.zip", exdir = ".")
 
 ### read X_test, y_test, and subjects_test text files
 ### ProjData\UCI HAR Dataset\test
-xtest <- read.table("./ProjData/UCI HAR Dataset/test/X_test.txt", header=F, sep = "")
-ytest <- read.table("./ProjData/UCI HAR Dataset/test/y_test.txt", header=F, sep = "", col.names = "activity")
-subjecttest <- read.table("./ProjData/UCI HAR Dataset/test/subject_test.txt", header=F, sep = "", col.names = "subject")
+xtest <- read.table("./UCI HAR Dataset/test/X_test.txt", header=F, sep = "")
+ytest <- read.table("./UCI HAR Dataset/test/y_test.txt", header=F, sep = "", col.names = "activity")
+subjecttest <- read.table("./UCI HAR Dataset/test/subject_test.txt", header=F, sep = "", col.names = "subject")
 test <- cbind(xtest, ytest, subjecttest)
 
-xtrain <- read.table("./ProjData/UCI HAR Dataset/train/X_train.txt", header=F, sep = "")
-ytrain <- read.table("./ProjData/UCI HAR Dataset/train/y_train.txt", header=F, sep = "", col.names="activity")
-subjecttrain <- read.table("./ProjData/UCI HAR Dataset/train/subject_train.txt", header=F, sep="", col.names="subject")
+xtrain <- read.table("./UCI HAR Dataset/train/X_train.txt", header=F, sep = "")
+ytrain <- read.table("./UCI HAR Dataset/train/y_train.txt", header=F, sep = "", col.names="activity")
+subjecttrain <- read.table("./UCI HAR Dataset/train/subject_train.txt", header=F, sep="", col.names="subject")
 train <- cbind(xtrain, ytrain, subjecttrain)
 ttdata <- rbind(test, train)
 
 ## 2. Extracts only the measurements on the mean and standard deviation for each measurement.
-feature <- read.table("./ProjData/UCI HAR Dataset/features.txt", header=F, sep = "")
+feature <- read.table("./UCI HAR Dataset/features.txt", header=F, sep = "")
 namesttdata <- c(tolower(feature[, 2]), "activity", "subject")
 namesttdata2 <- c(c(grep("mean", namesttdata, value=TRUE), grep("std", namesttdata, value=TRUE)), "activity", "subject")
 namesttdatabool <- namesttdata %in% namesttdata2
@@ -63,7 +57,7 @@ ttdatameanstd <- ttdata[, colIndex]
 colnames(ttdatameanstd) <- namesttdata2
 
 ## 3. Uses descriptive activity names to name the activities in the data set
-activity <- read.table("./ProjData/UCI HAR Dataset/activity_labels.txt", header=F, sep = "")
+activity <- read.table("./UCI HAR Dataset/activity_labels.txt", header=F, sep = "")
 activityNames <- factor(activity[, 2])
 activityVector <- activityNames[ttdatameanstd$activity]
 names(activityVector) <- "activity"
@@ -79,10 +73,10 @@ ttdatafinal <- ddply(ttdatameanstd, .(activity, subject), colwise(mean))
 
 ## write the final data to a te test file "tidydata.txt" to a sub directory ProjData
 ## under the current working directory 
-write.table(ttdatafinal, "./ProjData/tidydata.txt", sep="\t", append=FALSE, quote=FALSE, col.names=TRUE)
+write.table(ttdatafinal, "./tidydata.txt", sep="\t", append=FALSE, quote=FALSE, col.names=TRUE)
 
 ## you can read the data 
-checkdata <- read.table("./ProjData/tidydata.txt", sep="\t", header=TRUE)
+checkdata <- read.table("./tidydata.txt", sep="\t", header=TRUE)
 
 ## 6. Create table of variables, variables descrions and their unites
 ##  using RScrippt (This is optional)
